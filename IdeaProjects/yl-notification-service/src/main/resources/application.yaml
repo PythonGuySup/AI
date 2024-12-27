@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: notification-service
+
+server.port: 8005
+
+logging:
+  level:
+    root: INFO
