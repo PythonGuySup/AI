@@ -87,7 +87,7 @@ services:
     restart: unless-stopped
 
   task-service-1:
-    build: ./todo-microservices/task-service
+    build: todo-microservices/task-service
     ports:
       - "8001:8001"
     environment:
@@ -106,7 +106,7 @@ services:
       - redis
 
   task-service-2:
-    build: ./todo-microservices/task-service
+    build: todo-microservices/task-service
     environment:
       - REDIS_HOST=redis
       - POSTGRES_HOST=postgres
@@ -118,7 +118,7 @@ services:
       - redis
 
   event-service:
-    build: ./todo-microservices/event-service
+    build: todo-microservices/event-service
     environment:
       - MONGO_HOST=mongodb
       - KAFKA_HOST=kafka
@@ -131,7 +131,7 @@ services:
 
   # notification-service
   notification-service:
-    build: ./todo-microservices/notification-service
+    build: todo-microservices/notification-service
     environment:
       - KAFKA_HOST=kafka
     depends_on:
@@ -140,7 +140,7 @@ services:
     restart: unless-stopped
 
   agent:
-    build: ./agent
+    build: agent
     ports:
       - "8500:8500"
       - "9000:9000"
