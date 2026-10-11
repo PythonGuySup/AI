@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDOManager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0b0b0b;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            padding: 2rem 1rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        /* карточки – чёрный фон, малиновые акценты */
+        .card {
+            background: #111;
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            margin-bottom: 1.8rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+            border: 1px solid #2a1a24;
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 600;
+            text-align: center;
+            color: #f0a3cf;
+            margin-bottom: 1.8rem;
+            letter-spacing: -0.3px;
+            text-shadow: 0 0 6px rgba(218, 48, 128, 0.4);
+        }
+
+        h2 {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #e879b9;
+            margin-bottom: 1rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 2px solid #da307e;
+            display: inline-block;
+        }
+
+        /* input + button */
+        .input-group {
+            display: flex;
+            gap: 0.8rem;
+            margin: 1.2rem 0 0.5rem;
+        }
+
+        .input-group input {
+            flex: 1;
+            background: #1e1e1e;
+            border: 1px solid #2c2428;
+            padding: 0.8rem 1rem;
+            border-radius: 1rem;
+            font-size: 1rem;
+            color: #f0e6ec;
+            transition: 0.2s;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #e6398b;
+            box-shadow: 0 0 0 2px rgba(230, 57, 139, 0.3);
+        }
+
+        .input-group input::placeholder {
+            color: #6a5a62;
+        }
+
+        button {
+            background: #da307e;
+            border: none;
+            padding: 0.8rem 1.6rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #0b0b0b;
+            cursor: pointer;
+            transition: 0.2s ease;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        button:hover {
+            background: #f04b96;
+            transform: translateY(-1px);
+        }
+
+        button:active {
+            transform: translateY(1px);
+        }
+
+        .delete-btn {
+            background: #2c1a22;
+            color: #ff99c8;
+            box-shadow: none;
+            padding: 0.5rem 1.2rem;
+            font-size: 0.8rem;
+        }
+
+        .delete-btn:hover {
+            background: #4a2537;
+            color: #ffb3d6;
+        }
+
+        /* список задач */
+        .task-list {
+            list-style: none;
+            margin-top: 0.8rem;
+        }
+
+        .task-item {
+            background: #181818;
+            border-radius: 1rem;
+            padding: 0.9rem 1rem;
+            margin-bottom: 0.7rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 4px solid #da307e;
+            transition: 0.1s linear;
+        }
+
+        .task-item:hover {
+            background: #1f1b1d;
+        }
+
+        .task-title {
+            font-weight: 500;
+            color: #f3e0ec;
+            font-size: 1rem;
+        }
+
+        .task-status {
+            background: #da307e20;
+            color: #f28cba;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 0.2rem 0.7rem;
+            border-radius: 2rem;
+            margin-left: 0.8rem;
+            letter-spacing: 0.3px;
+        }
+
+        .task-id {
+            font-size: 0.7rem;
+            color: #7f6a74;
+            font-family: monospace;
+            margin-top: 0.25rem;
+        }
+
+        /* статистика */
+        .stats {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.8rem;
+        }
+
+        .stat-card {
+            background: #0f0c0e;
+            flex: 1;
+            text-align: center;
+            padding: 1rem;
+            border-radius: 1.2rem;
+            border: 1px solid #2e1f28;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ff90c2;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #bb8ba6;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* системный статус */
+        .status-ok {
+            background: #0f1912;
+            color: #98fb98;
+            padding: 0.7rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+            border-left: 3px solid #da307e;
+        }
+
+        .status-error {
+            background: #2a141c;
+            color: #ff9eb5;
+            padding: 0.7rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+        }
+
+        .empty-message {
+            text-align: center;
+            color: #6a5a62;
+            padding: 2rem;
+            font-size: 0.9rem;
+        }
+
+        .loading {
+            color: #aa88a0;
+            text-align: center;
+            padding: 1rem;
+        }
+
+        /* уведомление */
+        .toast {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background: #da307e;
+            color: #0b0b0b;
+            font-weight: 600;
+            padding: 0.7rem 1.3rem;
+            border-radius: 2rem;
+            font-size: 0.85rem;
+            box-shadow: 0 6px 14px black;
+            z-index: 999;
+            animation: fadeInUp 0.2s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>✦ Your Event Manager ✦</h1>
+
+    <!-- карточка создания -->
+    <div class="card">
+        <h2>➕ новая задача</h2>
+        <div class="input-group">
+            <input type="text" id="taskTitle" placeholder="например: дописать проект" onkeypress="if(event.key==='Enter')createTask()">
+            <button id="createBtn" onclick="createTask()">Создать</button>
+        </div>
+    </div>
+
+    <!-- список задач + статы -->
+    <div class="card">
+        <h2>📋 задачи</h2>
+        <div id="tasksContainer"><div class="loading">загрузка...</div></div>
+        <div class="stats" id="stats" style="display: none;">
+            <div class="stat-card"><div class="stat-number" id="totalTasks">0</div><div class="stat-label">всего</div></div>
+            <div class="stat-card"><div class="stat-number" id="newTasks">0</div><div class="stat-label">новых</div></div>
+        </div>
+    </div>
+
+    <!-- статус системы -->
+    <div class="card">
+        <h2>⚡ системный статус</h2>
+        <div id="systemStatus"><div class="loading">проверка...</div></div>
+    </div>
+</div>
+
+<script>
+    const API_BASE = '';          // пустая строка = относительный путь
+    let refreshInterval = null;
+
+    // ----- вспомогательные -----
+    const $ = id => document.getElementById(id);
+
+    function showMsg(text, isError = false) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = text;
+        if (isError) toast.style.background = '#3d1f2c';
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2200);
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        });
+    }
+
+    // ----- статус системы -----
+    async function checkSystemStatus() {
+        try {
+            const res = await fetch(`${API_BASE}/tasks`);
+            if (res.ok) {
+                $('systemStatus').innerHTML = `<div class="status-ok">✅ онлайн · сервер отвечает</div>`;
+            } else throw new Error();
+        } catch (e) {
+            $('systemStatus').innerHTML = `<div class="status-error">⚠️ ошибка подключения к API</div>`;
+        }
+    }
+
+    // ----- отрисовка задач и статистики -----
+    function renderTasks(tasks) {
+        const container = $('tasksContainer');
+        if (!tasks.length) {
+            container.innerHTML = `<div class="empty-message">✨ пока нет задач · создайте первую</div>`;
+            $('stats').style.display = 'none';
+            return;
+        }
+
+        const html = `<ul class="task-list">${tasks.map(task => `
+            <li class="task-item">
+                <div>
+                    <div class="task-title">
+                        ${escapeHtml(task.title)}
+                        <span class="task-status">${task.status}</span>
+                    </div>
+                    <div class="task-id">#${task.id}</div>
+                </div>
+                <button class="delete-btn" onclick="deleteTask('${task.id}')">✖ удалить</button>
+            </li>
+        `).join('')}</ul>`;
+        container.innerHTML = html;
+
+        // статистика
+        const total = tasks.length;
+        const newCount = tasks.filter(t => t.status === 'NEW').length;
+        $('totalTasks').innerText = total;
+        $('newTasks').innerText = newCount;
+        $('stats').style.display = 'flex';
+    }
+
+    async function loadTasks() {
+        try {
+            const res = await fetch(`${API_BASE}/tasks`);
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const tasks = await res.json();
+            renderTasks(tasks);
+        } catch (err) {
+            $('tasksContainer').innerHTML = `<div class="status-error">⚠️ не удалось загрузить задачи</div>`;
+            console.warn(err);
+        }
+    }
+
+    // ----- создание задачи -----
+    async function createTask() {
+        const input = $('taskTitle');
+        const title = input.value.trim();
+        if (!title) {
+            showMsg('введите название', true);
+            return;
+        }
+
+        const btn = $('createBtn');
+        const originalText = btn.innerText;
+        btn.innerText = '...';
+        btn.disabled = true;
+
+        try {
+            const res = await fetch(`${API_BASE}/tasks`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ title })
+            });
+            if (!res.ok) {
+                if (res.status === 429) throw new Error('слишком много запросов, подождите');
+                throw new Error('ошибка создания');
+            }
+            input.value = '';
+            showMsg('✓ задача добавлена');
+            await loadTasks();
+            checkSystemStatus(); // обновим статус заодно
+        } catch (err) {
+            showMsg(`✗ ${err.message}`, true);
+        } finally {
+            btn.innerText = originalText;
+            btn.disabled = false;
+        }
+    }
+
+    // ----- удаление -----
+    async function deleteTask(taskId) {
+        if (!confirm('удалить задачу?')) return;
+        try {
+            const res = await fetch(`${API_BASE}/tasks/${taskId}`, { method: 'DELETE' });
+            if (!res.ok) throw new Error('не удалось удалить');
+            showMsg('🗑 задача удалена');
+            await loadTasks();
+        } catch (err) {
+            showMsg('ошибка удаления', true);
+        }
+    }
+
+    // ----- автообновление (лаконично)-----
+    function startAutoRefresh() {
+        if (refreshInterval) clearInterval(refreshInterval);
+        refreshInterval = setInterval(() => loadTasks(), 5000);
+    }
+
+    // ----- инициализация -----
+    async function init() {
+        await checkSystemStatus();
+        await loadTasks();
+        startAutoRefresh();
+    }
+
+    // глобально доступные функции для onclick
+    window.createTask = createTask;
+    window.deleteTask = deleteTask;
+
+    init();
+</script>
+</body>
+</html>

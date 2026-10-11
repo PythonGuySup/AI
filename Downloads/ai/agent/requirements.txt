@@ -1,0 +1,13 @@
+langchain
+langchain-community
+langchain-core
+chromadb
+requests
+python-dotenv
+prometheus-client
+langchain_classic
+langchain-ollama
+langchain-chroma
+fastapi
+uvicorn
+langchain_text_splitters
